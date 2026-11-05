@@ -30,34 +30,48 @@ void Map::sortEntries() {
 }
 
 bool Map::contains(const std::string& key) const {
-    (void)key;
-    throw std::logic_error("Student implementation required: contains");
+    return (findIndex(key) == entries_.size()) ? false : true;
 }
 
 bool Map::insert(const std::string& key, int value) {
-    (void)key;
-    (void)value;
+    if (contains(key)) {return false;}
+    entries_.push_back({key, value});
+    for (std::size_t i = entries_.size() - 1; i > 0; i--) {
+        if (entries_[i].key < entries_[i - 1].key) { //test asks for sorted, cheaper O(n) vs O(nlogn) "sortEntries"
+            std::swap(entries_[i - 1], entries_[i]);
+        } else {break;}
+    }
+    return true;
     throw std::logic_error("Student implementation required: insert");
 }
 
 bool Map::update(const std::string& key, int newValue) {
-    (void)key;
-    (void)newValue;
+    std::size_t i = findIndex(key);
+    if (i == entries_.size()) {return false;}
+    entries_[i].value = newValue;
+    return true;
     throw std::logic_error("Student implementation required: update");
 }
 
 bool Map::erase(const std::string& key) {
-    (void)key;
+    std::size_t i = findIndex(key);
+    if (i == entries_.size()) {return false;}
+    entries_.erase(entries_.begin() + i);
+    return true;
     throw std::logic_error("Student implementation required: erase");
 }
 
 int Map::at(const std::string& key) const {
-    (void)key;
+    std::size_t i = findIndex(key);
+    if (i == entries_.size()) {throw std::logic_error("not found");}
+    return entries_[i].value;
     throw std::logic_error("Student implementation required: at");
 }
 
 int& Map::at(const std::string& key) {
-    (void)key;
+    std::size_t i = findIndex(key);
+    if (i == entries_.size()) {throw std::logic_error("not found");}
+    return entries_[i].value;
     throw std::logic_error("Student implementation required: at non-const");
 }
 
